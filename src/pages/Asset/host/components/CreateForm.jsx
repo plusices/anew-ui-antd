@@ -29,7 +29,8 @@ const CreateForm = (props) => {
     >
       <ProForm.Group>
         <ProFormText name="host_name" label="主机名称" width="m" />
-        <ProFormText name="ip_address" label="地址" width="m" rules={[{ required: true }]} />
+        <ProFormText name="public_ip" label="公有地址" width="m"  />
+        <ProFormText name="private_ip" label="私有地址" width="m"  />
         <ProFormText name="port" label="端口" width="m" rules={[{ required: true }]} />
         <ProFormSelect
           name="host_type"

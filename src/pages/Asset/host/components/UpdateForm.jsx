@@ -29,18 +29,23 @@ const UpdateForm = (props) => {
       <ProForm.Group>
         <ProFormText name="host_name" label="主机名称" width="m" initialValue={values.host_name} />
         <ProFormText
-          name="ip_address"
-          label="地址"
-          width="m"
-          rules={[{ required: true }]}
-          initialValue={values.ip_address}
-        />
-        <ProFormText
           name="port"
           label="端口"
           width="m"
           rules={[{ required: true }]}
           initialValue={values.port}
+        />
+        <ProFormText
+          name="public_ip"
+          label="公有ip"
+          width="m"
+          initialValue={values.public_ip}
+        />
+        <ProFormText
+          name="private_ip"
+          label="私有ip"
+          width="m"
+          initialValue={values.private_ip}
         />
         <ProFormSelect
           name="host_type"

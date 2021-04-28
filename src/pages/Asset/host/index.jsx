@@ -8,11 +8,13 @@ import { Button, Tooltip, Divider, Modal, message } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
+import ProCard from '@ant-design/pro-card';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
 import { queryHosts, deleteHost } from './service';
 import { queryDicts } from '@/pages/System/dict/service';
 import { queryGroups } from '@/pages/Asset/group/service';
+import styles from './host.less';
 
 const HostList = () => {
   const [createModalVisible, handleModalVisible] = useState(false);
@@ -98,29 +100,74 @@ const HostList = () => {
       dataIndex: 'host_name',
     },
     {
-      title: '地址',
+      title: 'IP地址',
       dataIndex: 'ip_address',
+      // valueType: 'option',
+      render: (_, record) =>(
+        <>
+          <span>{record.public_ip?record.public_ip+"(公有)":"" }</span><br/>
+          <span> {record.private_ip?record.private_ip+"(私有)":""}</span>
+        </>
+      ),
     },
     {
-      title: '端口',
-      dataIndex: 'port',
+      title: '创建日期',
+      dataIndex: 'buy_date',
+      valueType: 'dateTime'
     },
     {
-      title: '主机类型',
-      dataIndex: 'host_type',
+      title: '服务商',
+      dataIndex: 'provider'
+    },
+    {
+      title: '区域/账号',
+      dataIndex: 'zone',
+    },
+    {
+      title: '配置',
+      valueType: 'option',
+      render: (_, record) =>(
+        <>
+          <span>{record.instance_size }</span><br/>
+          <span> {record.cpu+' vcpu'+record.memory+' GB' }</span>
+        </>
+      ),
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
       valueType: 'select',
-      fieldProps: {
-        options: hostsType,
+      filters: true,
+      onFilter: true,
+      valueEnum: {
+        'running': {
+          text: 'running',
+        },
+        'deallocated': {
+          text: 'deallocated',
+        },
       },
     },
-    {
-      title: '认证类型',
-      dataIndex: 'auth_type',
-      valueType: 'select',
-      fieldProps: {
-        options: authsType,
-      },
-    },
+    // {
+    //   title: '端口',
+    //   dataIndex: 'port',
+    // },
+    // {
+    //   title: '主机类型',
+    //   dataIndex: 'host_type',
+    //   valueType: 'select',
+    //   fieldProps: {
+    //     options: hostsType,
+    //   },
+    // },
+    // {
+    //   title: '认证类型',
+    //   dataIndex: 'auth_type',
+    //   valueType: 'select',
+    //   fieldProps: {
+    //     options: authsType,
+    //   },
+    // },
     {
       title: '创建人',
       dataIndex: 'creator',
@@ -164,41 +211,54 @@ const HostList = () => {
 
   return (
     <PageHeaderWrapper>
-      <ProTable
-        actionRef={actionRef}
-        rowKey="id"
-        toolBarRender={(action, { selectedRows }) => [
-          <Button key="1" type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
-          </Button>,
-          selectedRows && selectedRows.length > 0 && (
-            <Button
-              key="2"
-              type="primary"
-              onClick={() => handleDelete({ ids: selectedRows.map((item) => item.id) })}
-              danger
-            >
-              <DeleteOutlined /> 删除
-            </Button>
-          ),
-        ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows }) => (
-          <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-          </div>
-        )}
-        request={(params) => queryHosts({ ...params }).then((res) => res.data)}
-        columns={columns}
-        rowSelection={{}}
-      />
+      <ProCard className={styles.hostCard}
+        tabs={{
+          type: 'card',
+        }}
+      >
+        <ProCard.TabPane key="tab1" tab="产品一">
+        <ProTable
+        //  tableStyle={{margin:'0px' }}
+          actionRef={actionRef}
+          rowKey="id"
+          toolBarRender={(action, { selectedRows }) => [
+            <Button key="1" type="primary" onClick={() => handleModalVisible(true)}>
+              <PlusOutlined /> 新建
+            </Button>,
+            selectedRows && selectedRows.length > 0 && (
+              <Button
+                key="2"
+                type="primary"
+                onClick={() => handleDelete({ ids: selectedRows.map((item) => item.id) })}
+                danger
+              >
+                <DeleteOutlined /> 删除
+              </Button>
+            ),
+          ]}
+          tableAlertRender={({ selectedRowKeys, selectedRows }) => (
+            <div>
+              已选择{' '}
+              <a
+                style={{
+                  fontWeight: 600,
+                }}
+              >
+                {selectedRowKeys.length}
+              </a>{' '}
+              项&nbsp;&nbsp;
+            </div>
+          )}
+          request={(params) => queryHosts({ ...params }).then((res) => res.data)}
+          columns={columns}
+          rowSelection={{}}
+        />
+        </ProCard.TabPane>
+        <ProCard.TabPane key="tab2" tab="产品二">
+          内容二
+        </ProCard.TabPane>
+      </ProCard>
+
       {createModalVisible && (
         <CreateForm
           authsType={authsType}

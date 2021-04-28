@@ -80,6 +80,7 @@ const BasicLayout = (props) => {
     [location.pathname],
   );
   const {} = useIntl();
+  
   return (
     <ProLayout
       logo={logo}
@@ -92,7 +93,6 @@ const BasicLayout = (props) => {
         if (menuItemProps.isUrl || !menuItemProps.path) {
           return defaultDom;
         }
-
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
